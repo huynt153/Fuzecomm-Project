@@ -1,0 +1,22 @@
+paths:
+  data_raw: data/Agriculture_dataset_with_metadata.csv
+  semantic_dataset: data/semantic_dataset.csv
+  results_dir: results/
+  figures_dir: results/figures/
+  reports_dir: results/reports/
+  logs_dir: results/logs/
+
+fse:
+  bytes_per_symbol: 1
+
+deepsc:
+  bytes_per_sample: 32
+
+energy:
+  unit: "uJ_per_bit"
+  per_bit: 0.5
+
+plotting:
+  backend: "Agg"
+
+random_seed: 42
