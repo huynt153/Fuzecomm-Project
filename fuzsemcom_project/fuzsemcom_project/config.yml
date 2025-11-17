@@ -1,22 +1,56 @@
 paths:
-  data_raw: data/Agriculture_dataset_with_metadata.csv
-  semantic_dataset: data/semantic_dataset.csv
-  results_dir: results/
-  figures_dir: results/figures/
-  reports_dir: results/reports/
-  logs_dir: results/logs/
+  data_raw: "data/raw_sensor_data.csv"
+  semantic_dataset: "data/semantic_dataset.csv"
+  results_dir: "results/"
+  figures_dir: "results/figures/"
+  reports_dir: "results/reports/"
+  logs_dir: "logs/"
 
+# Original FuzSemCom with NEW symbol design
 fse:
-  bytes_per_symbol: 1
+  bytes_per_symbol: 3  # Preamble(8b) + Hamming(12b) + CRC(4b) = 24b = 3B
+  encoding: "gray_hamming"  # New: Gray mapping + (12,8) Hamming code
 
+# Baseline 1: Conventional Communication
+conventional:
+  variants: [2, 8, 12]  # bytes per sample
+  encoding_pipeline:
+    - "delta_encoding"
+    - "8bit_quantization"
+    - "huffman_coding"
+    - "truncation_padding"
+
+# Baseline 2: Hard Threshold (replaces Fuzzy)
+hard_threshold:
+  bytes_per_symbol: 3  # Same as FuzSemCom for fair comparison
+  encoding: "direct"  # No fuzzy, just hard thresholds
+
+# Baseline 3: Quantized L-DeepSC
+quantized_deepsc:
+  variants: [2, 8, 12]  # bytes per sample
+  quantization: "int8"  # 8-bit quantization
+  original_bytes: 128   # Original L-DeepSC latent size
+
+# Comparison settings
+comparison:
+  methods:
+    - "fuzsemcom_new"
+    - "conventional_2b"
+    - "conventional_8b"
+    - "conventional_12b"
+    - "hard_threshold"
+    - "quantized_deepsc_2b"
+    - "quantized_deepsc_8b"
+    - "quantized_deepsc_12b"
+
+# Original L-DeepSC (for reference)
 deepsc:
-  bytes_per_sample: 32
+  bytes_per_sample: 128  # Original float32 latent
 
 energy:
-  unit: "uJ_per_bit"
-  per_bit: 0.5
+  per_bit: 0.5  # microjoules per bit
+
+random_seed: 42
 
 plotting:
   backend: "Agg"
-
-random_seed: 42
